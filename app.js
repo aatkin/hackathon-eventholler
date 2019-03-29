@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 app.post("/", (req, res) => {
   res.json({
     response_type: "in_channel",
-    text: `Nyt menossa: ${getCurrentEvent()}\nSeuraava tapahtuma: ${getNextEvent()}`
+    text: `Nyt menossa: *${getCurrentEvent()}*\nSeuraavaksi: *${getNextEvent()}*`
   });
 });
 
