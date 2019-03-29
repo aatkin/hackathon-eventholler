@@ -1,5 +1,5 @@
 const express = require("express");
-const { closestIndexTo, format } = require("date-fns");
+const { closestIndexTo, format, addHours } = require("date-fns");
 const app = express();
 const bodyParser = require("body-parser");
 const config = require("config");
@@ -11,8 +11,8 @@ const events = config.get("events");
 
 const mapEvent = event => ({
   name: event.name,
-  startTime: format(event.startTime, "HH.mm"),
-  endTime: format(event.endTime, "HH.mm")
+  startTime: format(addHours(event.startTime, 2), "HH.mm"),
+  endTime: format(addHours(event.endTime, 2), "HH.mm")
 });
 
 const getCurrentEvent = () => {
