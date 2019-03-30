@@ -1,5 +1,5 @@
 const express = require("express");
-const { closestIndexTo, format, addHours } = require("date-fns");
+const { closestIndexTo, format, addHours, isWithinRange } = require("date-fns");
 const app = express();
 const bodyParser = require("body-parser");
 const config = require("config");
@@ -18,7 +18,7 @@ const mapEvent = event => ({
 const getCurrentEvent = () => {
   const idx = closestIndexTo(Date.now(), events.map(e => e.startTime));
   const event = events[idx];
-  if (event) {
+  if (event && isWithinRange(Date.now(), event.startTime, event.endTime)) {
     const { name, startTime, endTime } = mapEvent(event);
     return `${name} (${startTime} - ${endTime})`;
   }
@@ -26,13 +26,29 @@ const getCurrentEvent = () => {
 };
 const getNextEvent = () => {
   const idx = closestIndexTo(Date.now(), events.map(e => e.startTime));
-  const event = events[idx + 1];
   if (event) {
+    const event = events[idx + 1];
     const { name, startTime, endTime } = mapEvent(event);
     return `${name} (${startTime} - ${endTime})`;
   }
   return null;
 };
+const mapOutput = (currentEvent, nextEvent) => {
+  let output = '';
+  if (!currentEvent && !nextEvent) {
+    return 'Event is over. Time to part-ee!';
+  }
+  if (currentEvent) {
+    output += `Nyt: *${currentEvent}*`;
+  }
+  if (nextEvent) {
+    if (output) {
+      output += '\n';
+    }
+    output += `Seuraavaksi: *${nextEvent}*`;
+  }
+  return output;
+}
 
 let validateRequest = function({ token, team_id } = {}) {
   if (!token || !team_id) {
@@ -56,7 +72,7 @@ app.use((req, res, next) => {
 app.post("/", (req, res) => {
   res.json({
     response_type: "in_channel",
-    text: `Nyt menossa: *${getCurrentEvent()}*\nSeuraavaksi: *${getNextEvent()}*`
+    text: mapOutput(getCurrentEvent(), getNextEvent())
   });
 });
 
