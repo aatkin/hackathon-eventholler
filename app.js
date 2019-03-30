@@ -73,14 +73,18 @@ app.use((req, res, next) => {
   console.log(req.body);
   if (validateRequest(req.body)) {
     return next();
+  } else {
+    return res.json({
+      response_type: "ephemeral",
+      text: `TARTTIS VARMAAN KOODAA :reaktor-kioski: :karhu-brows:`
+    });
   }
-  return res.status(403).json({ error: "Unauthorized request" });
 });
 
 app.post("/", (req, res) => {
   res.json({
     response_type: "in_channel",
-    text: `@channel ${mapOutput(getCurrentEvent(), getNextEvent())}`
+    text: `<!channel> ${mapOutput(getCurrentEvent(), getNextEvent())}`
   });
 });
 
