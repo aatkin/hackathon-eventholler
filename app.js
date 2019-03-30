@@ -6,6 +6,7 @@ const config = require("config");
 
 const applicationToken = process.env.APPLICATION_TOKEN;
 const applicationTeamId = process.env.APPLICATION_TEAM_ID;
+const allowedUsers = (process.env.ALLOWED_USERS || []).split(",");
 
 const events = config.get("events");
 
@@ -37,27 +38,29 @@ const getNextEvent = () => {
   return null;
 };
 const mapOutput = (currentEvent, nextEvent) => {
-  let output = '';
+  let output = "";
   if (!currentEvent && !nextEvent) {
-    return 'Event is over. Time to part-ee!';
+    return "Event is over. Time to part-ee!";
   }
   if (currentEvent) {
     output += `Nyt: *${currentEvent}*`;
   }
   if (nextEvent) {
     if (output) {
-      output += '\n';
+      output += "\n";
     }
     output += `Seuraavaksi: *${nextEvent}*`;
   }
   return output;
-}
+};
 
-let validateRequest = function({ token, team_id } = {}) {
+let validateRequest = function({ token, team_id, user_id } = {}) {
   if (!token || !team_id) {
     return false;
   }
-  return token === applicationToken && team_id === applicationTeamId;
+  return (
+    token === applicationToken && team_id === applicationTeamId && allowedUsers.includes(user_id)
+  );
 };
 
 app.use(bodyParser.json());
