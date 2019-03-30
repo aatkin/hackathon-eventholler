@@ -6,7 +6,7 @@ const config = require("config");
 
 const applicationToken = process.env.APPLICATION_TOKEN;
 const applicationTeamId = process.env.APPLICATION_TEAM_ID;
-const allowedUsers = (process.env.ALLOWED_USERS || []).split(",");
+const allowedUsers = (process.env.ALLOWED_USERS || '').split(",");
 
 const events = config.get("events");
 
