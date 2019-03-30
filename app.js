@@ -26,8 +26,8 @@ const getCurrentEvent = () => {
 };
 const getNextEvent = () => {
   const idx = closestIndexTo(Date.now(), events.map(e => e.startTime));
+  const event = events[idx + 1];
   if (event) {
-    const event = events[idx + 1];
     const { name, startTime, endTime } = mapEvent(event);
     return `${name} (${startTime} - ${endTime})`;
   }
