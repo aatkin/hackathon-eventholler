@@ -19,6 +19,7 @@ const mapEvent = event => ({
 const getCurrentEvent = () => {
   const idx = closestIndexTo(Date.now(), events.map(e => e.startTime));
   const event = events[idx];
+  console.log('Current event:', JSON.stringify(event));
   if (event && isWithinRange(Date.now(), event.startTime, event.endTime)) {
     const { name, startTime, endTime } = mapEvent(event);
     return `${name} (${startTime} - ${endTime})`;
@@ -31,6 +32,7 @@ const getNextEvent = () => {
   if (event && isWithinRange(Date.now(), event.startTime, event.endTime)) {
     event = events[idx + 1];
   }
+  console.log('Next event:', JSON.stringify(event));
   if (event) {
     const { name, startTime, endTime } = mapEvent(event);
     return `${name} (${startTime} - ${endTime})`;
